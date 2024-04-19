@@ -12,7 +12,6 @@ import { Presidente } from './entidades/Presidente.js';
 import { Deputado } from './entidades/Deputado.js';
 import { Candidato } from './entidades/Candidato.js';
 
-// Criação do middleware de upload
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
