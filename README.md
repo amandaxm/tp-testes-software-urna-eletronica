@@ -6,12 +6,12 @@
 
 2. **Execução do Servidor:**
 
-Após a instalação das dependências e configuração das variáveis de ambiente, execute o seguinte comando para iniciar o servidor local:
+   Após a instalação das dependências e configuração das variáveis de ambiente, execute o seguinte comando para iniciar o servidor local:
    
    npm run dev
 
-O servidor estará acessível em `http://localhost:3000`.
+   O servidor estará acessível em `http://localhost:3000`.
 
 3. **Acesso à Aplicação:**
 
-Abra seu navegador e visite `http://localhost:3000`.
+   Abra seu navegador e visite `http://localhost:3000`.
