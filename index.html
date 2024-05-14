@@ -35,6 +35,21 @@
             cursor: pointer;
         }
 
+        .iniciarVotacao-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .iniciarVotacao-button button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
         /* Adicionando estilo para ocultar um formulário por vez */
         #presidenteForm,
         #deputadoForm {
@@ -46,11 +61,175 @@
         #deputadoForm.active {
             display: block;
         }
+
+        .contentContainer {
+            display: none;
+
+        }
+
+        .administrador-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .administrador-form {
+            display: inline-block;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .administrador-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .administrador-form input[type="password"] {
+            width: 200px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .administrador-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .administrador-form button:hover {
+            background-color: #45a049;
+        }
+
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .relatorio-container {
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 400px;
+            margin: 20px auto;
+            background-color: #f2e8d8;
+            /* Tom pastel de bege */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .id-votacao {
+            margin-bottom: 0px;
+        }
+
+        .resultados {
+            margin-bottom: 0px;
+        }
+
+        .resultado {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .resultado span {
+            padding-left: 10px;
+            margin-top: 21px;
+            /* ou qualquer outro valor de padding que preferir */
+        }
+
+        .id-votacao {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .id-votacao span {
+            padding-left: 10px;
+            margin-top: 21px;
+            /* ou qualquer outro valor de padding que preferir */
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        th {
+            padding-right: 20px;
+            /* Ajuste o valor conforme necessário */
+        }
+
+        /* span {
+            margin-left: 0px;
+        } */
     </style>
 </head>
 
 <body>
-    <div class="urna">
+    <div class="administrador">
+        <div class="administrador-container">
+            <h2>Área do Administrador</h2>
+            <div class="administrador-form">
+                <label for="codigoAdministrador">Código do Administrador:</label>
+                <input type="password" id="codigoAdministrador" />
+                <button onclick="verificarAdministrador()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="iniciarVotacao" style="display: none;">
+
+        <div class="iniciarVotacao-button">
+            <button onclick="iniciarVotacao()" type="submit" id="btnIniciarVotacao">Iniciar sessão de votação</button>
+        </div>
+    </div>
+    <div class="iniciarVotacao2" style="display: none;">
+        <div class="administrador-container">
+            <h2>Área do Administrador</h2>
+            <div class="sessao-container">
+                <label for="sessao">Sessão ID:</label>
+                <label id="sessao"></label>
+                <label for="sessao">Quantidade votos:</label>
+                <label id="qtd"></label>
+            </div>
+
+            <div class="administrador-form">
+                <label for="tituloEleitor">Digite o título de eleitor do usuário que irá votar:</label>
+                <input type="text" id="tituloEleitor" />
+                <div id="tituloEleitorError" class="error-message" style="color: red;"></div>
+            </div>
+
+            <div class="iniciarVotacao-button">
+                <button onclick="iniciarVotacao2()" type="submit" id="btnIniciarVotacao2">Iniciar Voto do
+                    Cidadão</button>
+                <button onclick="gerarRelatorioSessao()">Finalizar sessão e obter relatório</button>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="urna" style="display: none;">
         <div class="tela">
             <div class="display-1">
                 <div class="display-1-left">
@@ -87,6 +266,9 @@
             </div>
 
         </div>
+        <div class="telafim" style="display:none">
+            <div class="aviso--muito-grande">FIM</div>
+        </div>
 
         <div class="teclado">
             <div class="teclado--linha">
@@ -115,13 +297,13 @@
         </div>
     </div>
 
-    <div id="contentContainer">
+
+    <div id="contentContainer" class="contentContainer">
         <div class="button-container" style="margin-top: 5%;">
             <button onclick="showPresidentForm()">Cadastrar Presidente</button>
             <button onclick="showDeputadoForm()">Cadastrar Deputado</button>
-        </div>
 
-        <h1>Cadastro de Candidatos</h1>
+        </div>
 
         <div class="form-container" id="presidenteForm">
             <h2>Presidente</h2>
@@ -169,10 +351,6 @@
                     <input type="text" id="partidoVicePresidente" name="partidoVicePresidente" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="numeroVicePresidente">Número:</label>
-                    <input type="text" id="numeroVicePresidente" name="numeroVicePresidente" required>
-                </div>
 
                 <div class="form-group">
                     <label for="imagemVicePresidente">Imagem:</label>
@@ -217,6 +395,72 @@
         </div>
     </div>
 
+    <div class="relatorio-container" id="relatorio-container" style="display:none;">
+        <div class="header">
+            <h2>Relatório Eleitoral</h2>
+        </div>
+        <div class="id-votacao">
+            <label>Sessão:</label>
+            <span id="votacaoId"></span>
+        </div>
+        <div class="resultados">
+            <div class="resultado" id="resultadoPresidentes">
+                <label>Presidente eleito:</label>
+                <span id="vencedorPresidente"></span>
+
+            </div>
+            <div class="resultado" id="resultadoDeputados">
+                <label>Deputado eleito:</label>
+                <span id="vencedorDeputado"></span>
+
+            </div>
+            <h4>---------------Presidente----------------</h4>
+
+            <div class="resultado" id="resultadoPresidentes">
+
+                <table id="tabelaPresidentes">
+                    <thead>
+                        <tr>
+                            <th>Número Candidato</th>
+                            <th>Votos</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <h4>----------------Deputado-----------------</h4>
+            <div class="resultado" id="resultadoDeputados">
+                <table id="tabelaDeputados">
+                    <thead>
+                        <tr>
+                            <th>Número Candidato</th>
+                            <th>Votos</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <h4>-----------------------------------------</h4>
+
+            <div class="resultado">
+                <label>Votos Brancos:</label>
+                <span id="votosBrancos"></span>
+            </div>
+            <div class="resultado">
+                <label>Votos Nulos:</label>
+                <span id="votosNulos"></span>
+            </div>
+            <div class="resultado">
+                <label>Quantidade de total eleitores:</label>
+                <span id="quantidadeEleitores"></span>
+            </div>
+            <div class="resultado" id="resultadoGeral">
+                <label>Data emissão:</label>
+                <span id="horaRelatorio"></span>
+            </div>
+        </div>
+    </div>
+
     <script>
         function showMessage() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -234,7 +478,7 @@
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 500);
-            } 
+            }
         }
 
         showMessage();
@@ -242,18 +486,18 @@
         function showPresidentForm() {
             document.getElementById('presidenteForm').classList.add('active');
             document.getElementById('deputadoForm').classList.remove('active');
+            document.querySelector('.relatorio-container').style.display = 'none';
+
         }
 
         function showDeputadoForm() {
             document.getElementById('presidenteForm').classList.remove('active');
             document.getElementById('deputadoForm').classList.add('active');
+            document.querySelector('.relatorio-container').style.display = 'none';
+
         }
     </script>
-    <script>
-        if (1 < 13) {
-            document.getElementById("contentContainer").style.display = "block";
-        }
-    </script>
+
     <script>
         let etapas;
 
@@ -267,6 +511,100 @@
         }
 
         fetchEtapas();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleciona o formulário de presidente
+            const presidenteForm = document.getElementById('formPresidente');
+
+            // Variável global para armazenar os erros
+            let errors = [];
+
+            // Adiciona um listener para o evento 'submit' no formulário de presidente
+            presidenteForm.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Impede o envio do formulário
+
+                try {
+                    // Envia a requisição via fetch
+                    const response = await fetch('/presidente', {
+                        method: 'POST',
+                        body: new FormData(presidenteForm),
+                    });
+
+                    // Converte a resposta para JSON
+                    const data = await response.json();
+
+                    // Verifica se há erros na resposta e armazena-os
+                    if (response.ok && data.errors && data.errors.length > 0) {
+                        errors = data.errors;
+
+                        // Exibir os erros após um pequeno intervalo
+                        setTimeout(function () {
+                            let errorMessage = 'Erros encontrados:\n';
+                            errors.forEach(function (error) {
+                                errorMessage += '- ' + error + '\n';
+                            });
+                            alert(errorMessage);
+                        }, 100);
+                    } else {
+                        // Se não houver erros ou se a resposta não for bem-sucedida, faça algo com os dados recebidos (se necessário)
+                        console.log('Dados recebidos:', data);
+                    }
+                } catch (error) {
+                    // Se ocorrer um erro na requisição
+                    alert('Erro ao salvar presidente: ' + error.message); // Exibe um alerta com a mensagem de erro
+                }
+            });
+        });
+
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleciona o formulário de deputado
+            const deputadoForm = document.getElementById('formDeputado');
+
+            // Variável global para armazenar os erros do deputado
+            let deputadoErrors = [];
+
+            // Adiciona um listener para o evento 'submit' no formulário de deputado
+            deputadoForm.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Impede o envio do formulário
+
+                try {
+                    // Envia a requisição via fetch
+                    const response = await fetch('/deputado', {
+                        method: 'POST',
+                        body: new FormData(deputadoForm),
+                    });
+
+                    // Converte a resposta para JSON
+                    const data = await response.json();
+
+                    // Verifica se há erros na resposta e armazena-os
+                    if (response.ok && data.errors && data.errors.length > 0) {
+                        deputadoErrors = data.errors;
+
+                        // Exibir os erros após um pequeno intervalo
+                        setTimeout(function () {
+                            let errorMessage = 'Erros encontrados no cadastro do deputado:\n';
+                            deputadoErrors.forEach(function (error) {
+                                errorMessage += '- ' + error + '\n';
+                            });
+                            alert(errorMessage);
+                        }, 100);
+                    } else {
+                        // Se não houver erros ou se a resposta não for bem-sucedida, faça algo com os dados recebidos (se necessário)
+                        console.log('Dados recebidos do deputado:', data);
+                    }
+                } catch (error) {
+                    // Se ocorrer um erro na requisição
+                    alert('Erro ao salvar deputado: ' + error.message); // Exibe um alerta com a mensagem de erro
+                }
+            });
+        });
+
     </script>
 
 </body>

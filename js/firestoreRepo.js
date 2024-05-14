@@ -53,6 +53,8 @@ async function adicionarPresidente(presidente) {
   }
 }
 
+
+
 async function getDeputado(id) {
   try {
     const docRef = doc(db, "deputados", id);
@@ -66,6 +68,35 @@ async function getDeputado(id) {
   } catch (error) {
     console.error("Erro ao obter documento:", error);
     throw error;
+  }
+}
+
+async function salvarVoto(votos, idVotacao) {
+  debugger
+  console.log('chegiu aqui')
+  console.log(votos)
+  try {
+      const docRef = await addDoc(collection(db, "votos"), {
+        ...votos,
+        idVotacao
+      });
+      return { success: true, message: ("Voto salvo com sucesso: ", docRef.id)};
+  } catch (error) {
+    return { success: false, message: "Erro ao salvar voto. "};
+  }
+}
+
+async function salvarRelatorio(administrador, idVotacao, tituloEleitor) {
+  debugger
+  try {
+      const docRef = await addDoc(collection(db, "relatorio"), {
+        administrador,
+        idVotacao,
+        tituloEleitor
+      });
+      return { success: true};
+  } catch (error) {
+    return { success: false};
   }
 }
 
@@ -107,7 +138,26 @@ async function getEtapasFromFirestore() {
     }
 }
 
+async function retornarVotosSessao(idVotacao) {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'votos'));
+    const votos = [];
+    console.log('vtoId'+idVotacao)
+    querySnapshot.forEach((doc) => {
+      const voto = doc.data();
+      console.log(voto)
+      if (voto.idVotacao == idVotacao) {
+        votos.push(voto);
+      }
+    });
+    console.log(votos)
+    return votos;
+  } catch (error) {
+    console.error("Erro ao buscar os votos:", error);
+    throw error;
+  }
+}
 
 
 
-export { adicionarDeputado, adicionarPresidente, getDeputado, getEtapasFromFirestore };
+export { salvarVoto, adicionarDeputado, adicionarPresidente, getDeputado, getEtapasFromFirestore, salvarRelatorio, retornarVotosSessao };

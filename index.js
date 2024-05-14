@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getEtapasFromFirestore, adicionarDeputado, adicionarPresidente } from './js/firestoreRepo.js';
+import { getEtapasFromFirestore, retornarVotosSessao, salvarVoto, adicionarDeputado, salvarRelatorio, adicionarPresidente } from './js/firestoreRepo.js';
 import { storagee } from './js/firebaseConfig.js';
 import bodyParser from 'body-parser';
 import multer from 'multer';
@@ -11,6 +11,8 @@ import { getDownloadURL } from "firebase/storage";
 import { Presidente } from './entidades/Presidente.js';
 import { Deputado } from './entidades/Deputado.js';
 import { Candidato } from './entidades/Candidato.js';
+import { Voto } from './entidades/Voto.js';
+import { Relatorio } from './entidades/Relatorio.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,50 +53,181 @@ app.post('/deputado', upload.single('imagemDeputado'), async (req, res) => {
 
   const urlImagem = await uploadImagem(req.file)
 
-  const novoDeputado = new Deputado(nomeDeputado, partidoDeputado, numeroDeputado, urlImagem, dataNascimento);
+  try {
+    const novoDeputado = new Deputado(nomeDeputado, partidoDeputado, numeroDeputado, urlImagem, dataNascimento);
+    let errors = [];
+    const novoDeputadoErrors = novoDeputado.validar();
+    if (novoDeputadoErrors.length > 0) {
 
-  await adicionarDeputado(novoDeputado).then(async result => {
-    if (result.success) {
-      etapas = await getEtapasFromFirestore();
-      res.redirect('/?status=success');
+      errors.push(...novoDeputadoErrors);
     }
-    else {
-      res.redirect(`/?status=error&message=${encodeURIComponent(result.message)}`);
+    if (errors.length > 0) {
+      return res.json({ errors });
     }
 
-  });
+    await adicionarDeputado(novoDeputado).then(async result => {
+      if (result.success) {
+        etapas = await getEtapasFromFirestore();
+        res.redirect('/?status=success');
+      }
+      else {
+        res.redirect(`/?status=error&message=${encodeURIComponent(result.message)}`);
+      }
+
+    });
+  } catch (error) {
+    console.error('Erro ao criar novo deputado:', error.message);
+  }
+
 });
 
 app.post('/presidente', upload.fields([{ name: 'imagemPresidente', maxCount: 1 }, { name: 'imagemVicePresidente', maxCount: 1 }]), async (req, res) => {
-  const { numeroPresidente, partidoPresidente, nomePresidente, dataNascimentoPresidente, numeroVicePresidente, partidoVicePresidente, nomeVicePresidente, dataNascimentoVicePresidente } = req.body;
-  const dataNascimentoPresi = new Date(dataNascimentoPresidente);
-  const dataNascimentoVicePresid = new Date(dataNascimentoVicePresidente);
+  try {
+    // Extrair dados do corpo da requisição
+    const {
+      numeroPresidente, partidoPresidente, nomePresidente, dataNascimentoPresidente,
+      partidoVicePresidente, nomeVicePresidente, dataNascimentoVicePresidente
+    } = req.body;
 
+    // Validar se foram enviados arquivos
+    if (!req.files || Object.keys(req.files).length === 0) {
+      throw new Error('Arquivo não encontrado');
+    }
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    throw new Error('Arquivo não encontrado');
-  }
+    // Processar imagens
+    const imagemPresidenteFile = req.files['imagemPresidente'][0];
+    const imagemVicePresidenteFile = req.files['imagemVicePresidente'][0];
+    const urlImagemPresidente = await uploadImagem(imagemPresidenteFile);
+    const urlImagemVicePresidente = await uploadImagem(imagemVicePresidenteFile);
 
-  const imagemPresidenteFile = req.files['imagemPresidente'][0];
-  const imagemVicePresidenteFile = req.files['imagemVicePresidente'][0];
+    const errors = [];
 
-  const urlImagemPresidente = await uploadImagem(imagemPresidenteFile);
-  const urlImagemVicePresidente = await uploadImagem(imagemVicePresidenteFile);
+    const novoPresidente = new Presidente(nomePresidente, partidoPresidente, numeroPresidente, urlImagemPresidente, new Date(dataNascimentoPresidente));
 
-  const novoPresidente = new Presidente(nomePresidente, partidoPresidente, numeroPresidente, urlImagemPresidente, dataNascimentoPresi);
-  novoPresidente.vicePresidente = new Candidato(nomeVicePresidente, partidoVicePresidente, numeroVicePresidente, urlImagemVicePresidente, dataNascimentoVicePresid);
+    const presidenteErrors = novoPresidente.validar();
+    if (presidenteErrors.length > 0) {
+      errors.push(" - - ERROS FORMULARIO PRESIDENTE: ");
+      errors.push(...presidenteErrors);
+    }
 
+    const vicePresidente = new Candidato(nomeVicePresidente, partidoVicePresidente, novoPresidente.numeroPresidente, urlImagemVicePresidente, new Date(dataNascimentoVicePresidente));
 
-  await adicionarPresidente(novoPresidente).then(async result => {
+    const vicePresidenteErrors = vicePresidente.validar();
+    if (vicePresidenteErrors.length > 0) {
+      errors.push(" - -ERROS FORMULÁRIO VICE-PRESIDENTE: ");
+
+      errors.push(...vicePresidenteErrors);
+    }
+    if (errors.length > 0) {
+      return res.json({ errors });
+    }
+
+    novoPresidente.adicionarVicePresidente(vicePresidente);
+
+    const result = await adicionarPresidente(novoPresidente);
+
+    // Verificar resultado da operação
     if (result.success) {
-      etapas = await getEtapasFromFirestore();
+      // Obter etapas do Firestore
+      const etapas = await getEtapasFromFirestore();
       res.redirect('/?status=success');
     } else {
       res.redirect(`/?status=error&message=${encodeURIComponent(result.message)}`);
-
     }
-  });
+  } catch (error) {
+    console.error('Erro durante o processamento da requisição POST para adicionar um presidente:', error);
+    res.redirect('/?status=error&message=Ocorreu um erro durante o processamento da requisição');
+  }
+});
 
+
+app.post('/salvar-votos', async (req, res) => {
+  debugger
+  const { votos } = req.body;
+
+  let votosUsuario;
+  let identificadorAdministrador;
+  let numeroDeputado;
+  let numeroPresidente;
+  let idVotacao;
+  let tituloEleitor;
+
+
+  votos.forEach(item => {
+    if (item.administrador) {
+      identificadorAdministrador = item.administrador;
+    } else if (item.idVotacao) {
+      idVotacao = item.idVotacao;
+    }
+    else if (item.tituloEleitor) {
+      tituloEleitor = item.tituloEleitor;
+    }
+    else if (item.etapa === 'PRESIDENTE') {
+      numeroPresidente = item.voto;
+    } else if (item.etapa === 'DEPUTADO') {
+      numeroDeputado = item.voto;
+    }
+
+    votosUsuario = new Voto(numeroPresidente, numeroDeputado);
+    let errors = [];
+    const votosUsuarioErrors = votosUsuario.validar();
+    if (votosUsuarioErrors.length > 0) {
+
+      errors.push(...votosUsuarioErrors);
+    }
+    if (errors.length > 0) {
+      return res.json({ errors });
+    }
+
+  });
+  try {
+    const result = await salvarVoto(votosUsuario, idVotacao);
+    if (result.success) {
+
+      const relatorio = new Relatorio(identificadorAdministrador, idVotacao, tituloEleitor);
+      const relatorioErrors = relatorio.validar();
+      if (relatorioErrors.length > 0) {
+
+        errors.push(...relatorioErrors);
+      }
+      if (errors.length > 0) {
+        return res.json({ errors });
+      }
+      const idVotacaoResult = relatorio.validarIdVotacao();
+      if (!idVotacaoResult.valid) {
+        console.error(idVotacaoResult.error);
+      }
+
+      const voterIDResult = relatorio.validateTituloEleitor(relatorio.tituloEleitor);
+      if (!voterIDResult.valid) {
+        console.error(voterIDResult.error);
+      }
+      if (voterIDResult.valid)
+        await salvarRelatorio(identificadorAdministrador, idVotacao, tituloEleitor);
+    }
+    if (result.success) {
+      return res.status(200).json({ success: true, message: 'Votos salvos com sucesso' });
+    } else {
+      return res.status(500).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    // Se houver um erro ao salvar os votos, retorne uma resposta de erro
+    console.error('Erro ao salvar votos:', error);
+    return res.status(500).json({ success: false, message: 'Erro ao salvar os votos' });
+  }
+
+
+});
+
+app.get('/obter-resultado', async (req, res) => {
+  const { idSessao } = req.query;
+  console.log(idSessao)
+  try {
+    const votos = await retornarVotosSessao(idSessao);
+    res.json(votos);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar os votos da sessão de votação' });
+  }
 });
 
 

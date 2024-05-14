@@ -1,50 +1,43 @@
 class Candidato {
-    constructor(nome, partido, numero, urlImagem, dataNascimento) {
-    
-      this.validarNome(nome);
-      this.validarPartido(partido);
-      this.validarNumero(numero);
-      this.validarUrlImagem(urlImagem);
-      this.validarDataNascimento(dataNascimento);
-  
-      this.nome = nome;
-      this.partido = partido;
-      this.numero = numero;
-      this.urlImagem = urlImagem;
-      this.dataNascimento = dataNascimento;
-    }
-  
-    validarNome(nome) {
-      if (!nome || typeof nome !== 'string' || nome.trim() === '') {
-        throw new Error('Nome inválido');
-      }
-      if (nome.length > 250) {
-        throw new Error('Nome deve ter no máximo 250 caracteres');
-      }
-    }
-  
-    validarPartido(partido) {
-      if (!partido || typeof partido !== 'string' || partido.trim() === '') {
-        throw new Error('Partido inválido');
-      }
-    }
-  
-    validarNumero(numero) {
-      if (!numero || typeof numero !== 'string' || numero.trim() === '' || isNaN(numero)) {
-        throw new Error('Número inválido');
-      }
-    }
-  
-    validarUrlImagem(urlImagem) {
-      if (!urlImagem || typeof urlImagem !== 'string' || urlImagem.trim() === '') {
-        throw new Error('URL de imagem inválida');
-      }
-    }
-  
-    validarDataNascimento(dataNascimento) {
-      if (!dataNascimento || !(dataNascimento instanceof Date) || isNaN(dataNascimento.getTime())) {
-        throw new Error('Data de nascimento inválida');
-      }
-    }
+  constructor(nome, partido, numero, urlImagem, dataNascimento) {
+    this.nome = nome;
+    this.partido = partido;
+    this.numero = numero;
+    this.urlImagem = urlImagem;
+    this.dataNascimento = dataNascimento;
   }
-  export { Candidato };
+
+
+
+  validar() {
+    const errors = [];
+
+
+    if (!this.nome || typeof this.nome !== 'string' || this.nome.trim() === '') {
+      errors.push('Nome inválido');
+    }
+    if (!this.nome.trim().includes(' ')) {
+      errors.push('Nome inválido. Deve conter pelo menos um sobrenome.');
+    }
+    if (this.nome.length > 250) {
+      errors.push('Nome deve ter no máximo 250 caracteres');
+    }
+    if (!this.partido || typeof this.partido !== 'string' || this.partido.trim() === '') {
+      errors.push('Partido inválido');
+    }
+    if (!this.numero || typeof this.numero !== 'string' || this.numero.trim() === '' || isNaN(this.numero)) {
+      errors.push('Número inválido');
+    }
+    if (!this.urlImagem || typeof this.urlImagem !== 'string' || this.urlImagem.trim() === '') {
+      errors.push('URL de imagem inválida');
+    }
+    const data = new Date(this.dataNascimento);
+    if (isNaN(data.getTime())) {
+      errors.push('Data de nascimento inválida');
+    }
+
+    return errors;
+  }
+}
+
+export { Candidato };

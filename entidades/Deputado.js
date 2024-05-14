@@ -1,25 +1,24 @@
 import { Candidato } from './Candidato.js';
 
 class Deputado extends Candidato {
-    constructor(nome, partido, numero, urlImagem, dataNascimento) {
-      super(nome, partido, numero, urlImagem, dataNascimento);
-      this.validarNumeroDeputado(numero);
-      this.validarIdadeDeputado(dataNascimento);
-    }
-  
-    validarNumeroDeputado(numero) {
-      if (numero.length !== 4) {
-        throw new Error('Número do deputado deve ter 4 dígitos');
-      }
-    }
-  
-    validarIdadeDeputado(dataNascimento) {
-      const idadeMinima = 21; 
-      const hoje = new Date();
-      const idade = hoje.getFullYear() - dataNascimento.getFullYear();
-      if (idade < idadeMinima) {
-        throw new Error(`O candidato deve ter no mínimo ${idadeMinima} anos para se tornar deputado`);
-      }
-    }
+  constructor(nome, partido, numero, urlImagem, dataNascimento) {
+    super(nome, partido, numero, urlImagem, dataNascimento);
   }
-  export { Deputado };
+  validar() {
+    const errors = super.validar();
+
+    if (this.numero.length !== 4) {
+      errors.push('Número do deputado deve ter 4 dígitos');
+    }
+    const idadeMinima = 21;
+    const hoje = new Date();
+    const idade = hoje.getFullYear() - this.dataNascimento.getFullYear();
+    if (idade < idadeMinima) {
+      errors.push(`O candidato deve ter no mínimo ${idadeMinima} anos para se tornar deputado`);
+    }
+    return errors;
+
+  }
+
+}
+export { Deputado };

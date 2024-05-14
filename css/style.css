@@ -31,9 +31,23 @@ body{
     display: flex;
     flex-direction: column;
 }
+.telafim {
+    width: 500px; 
+    height: 350px; /* 320px */
+    background: linear-gradient(to right, #E8E8E8, #C1C1C1);
+    border: 2px solid #555;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center;
+}
 .esquerda {
     display: flex;
     flex-direction: column; 
+}
+label {
+    margin-top: 20px;
+    font-size: 18px;
 }
 .topo-esquerda {
     display: flex;
@@ -207,9 +221,14 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-h1, h2 {
+h1,
+h2 {
     text-align: center;
     margin-bottom: 20px;
 }
@@ -220,6 +239,8 @@ form {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 30px;
+    max-width: 500px;
+    width: 100%;
 }
 
 label {
@@ -247,4 +268,81 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #45a049;
+}
+
+.sessao-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sessao-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.administrador-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.administrador-form {
+    display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    max-width: 400px;
+    width: 100%;
+}
+
+.administrador-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.administrador-form input[type="password"],
+.administrador-form input[type="text"] {
+    width: calc(100% - 16px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.administrador-form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.administrador-form button:hover {
+    background-color: #45a049;
+}
+
+.iniciarVotacao-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.iniciarVotacao-button button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.iniciarVotacao2 {
+    display: none;
+}
+
+.contentContainer {
+    display: none;
 }
