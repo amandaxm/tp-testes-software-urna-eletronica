@@ -17,14 +17,14 @@ async function adicionarDeputado(deputado) {
         cargo: 'DEPUTADO'
 
       });
-      return { success: true, message: ("Deputado adicionado com ID: ", docRef.id)};
+      const etapasAtualizadas = await getEtapasFromFirestore();
+      return { success: true, message: ("Deputado adicionado com ID: "), etapas: etapasAtualizadas};
   } catch (error) {
     return { success: false, message: "Erro ao adicionar deputado "};
   }
 }
 async function adicionarPresidente(presidente) {
   try {
-    console.log(presidente)
     const presidenteQuery = query(collection(db, "presidente"), where("numero", "==", presidente.numero));
         const presidenteSnapshot = await getDocs(presidenteQuery);
         if (!presidenteSnapshot.empty) {
@@ -47,8 +47,9 @@ async function adicionarPresidente(presidente) {
         cargo: 'VICE-PRESIDENTE',
       }
     });
-    console.log(docRef)
-    return { success: true, message: ("Presidente adicionado com ID: ", docRef.id)};
+    const etapasAtualizadas = await getEtapasFromFirestore();
+
+    return { success: true, message: ("Presidente adicionado com ID: "), etapas: etapasAtualizadas};
   } catch (error) {
     return { success: false, message: "Erro ao adicionar presidente "};
   }
@@ -73,9 +74,7 @@ async function getDeputado(id) {
 }
 
 async function salvarVoto(votos, idVotacao) {
-  debugger
-  console.log('chegiu aqui')
-  console.log(votos)
+
   try {
       const docRef = await addDoc(collection(db, "votos"), {
         ...votos,
@@ -88,7 +87,6 @@ async function salvarVoto(votos, idVotacao) {
 }
 
 async function salvarRelatorio(administrador, idVotacao, tituloEleitor) {
-  debugger
   try {
       const docRef = await addDoc(collection(db, "relatorio"), {
         administrador,
@@ -132,6 +130,7 @@ async function getEtapasFromFirestore() {
 
         }
       ]
+
         return { object };
     } catch (error) {
         console.error('Erro ao buscar etapas do Firestore:', error);
@@ -143,15 +142,12 @@ async function retornarVotosSessao(idVotacao) {
   try {
     const querySnapshot = await getDocs(collection(db, 'votos'));
     const votos = [];
-    console.log('vtoId'+idVotacao)
     querySnapshot.forEach((doc) => {
       const voto = doc.data();
-      console.log(voto)
       if (voto.idVotacao == idVotacao) {
         votos.push(voto);
       }
     });
-    console.log(votos)
     return votos;
   } catch (error) {
     console.error("Erro ao buscar os votos:", error);

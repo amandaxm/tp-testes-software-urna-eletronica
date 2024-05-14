@@ -66,9 +66,10 @@ app.post('/deputado', upload.single('imagemDeputado'), async (req, res) => {
     }
 
     await adicionarDeputado(novoDeputado).then(async result => {
-      if (result.success) {
-        etapas = await getEtapasFromFirestore();
+      
 
+      if (result.success) {
+        etapas = result.etapas;
         return res.json({ success: true });
 
       } else {
@@ -129,11 +130,10 @@ app.post('/presidente', upload.fields([{ name: 'imagemPresidente', maxCount: 1 }
     novoPresidente.adicionarVicePresidente(vicePresidente);
 
     const result = await adicionarPresidente(novoPresidente);
-
     // Verificar resultado da operação
     if (result.success) {
       // Obter etapas do Firestore
-      etapas = await getEtapasFromFirestore();
+      etapas = result.etapas;
 
       return res.json({ success: true });
     } else {
@@ -148,7 +148,6 @@ app.post('/presidente', upload.fields([{ name: 'imagemPresidente', maxCount: 1 }
 
 
 app.post('/salvar-votos', async (req, res) => {
-  debugger
   const { votos } = req.body;
 
   let votosUsuario;
@@ -227,7 +226,6 @@ app.post('/salvar-votos', async (req, res) => {
 
 app.get('/obter-resultado', async (req, res) => {
   const { idSessao } = req.query;
-  console.log(idSessao)
   try {
     const votos = await retornarVotosSessao(idSessao);
     res.json(votos);

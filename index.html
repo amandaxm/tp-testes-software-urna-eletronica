@@ -530,7 +530,7 @@
                     const data = await response.json();
                     if (response.ok && data.success) {
                         alert('Presidente cadastrado com sucesso!');
-                      
+
                         document.querySelector('.iniciarVotacao').style.display = 'block';
                         document.querySelector('.urna').style.display = 'none';
                         document.querySelector('.contentContainer').style.display = 'block';
@@ -538,6 +538,7 @@
                         document.getElementById('deputadoForm').classList.remove('active');
                         document.getElementById('presidenteForm').classList.remove('active');
                         presidenteForm.reset();
+                        fetchEtapas();
 
 
                     } else if (response.ok && data.errors && data.errors.length > 0) {
@@ -550,8 +551,6 @@
                             });
                             alert(errorMessage);
                         }, 100);
-                    } else {
-                        console.log('Dados recebidos:', data);
                     }
                 } catch (error) {
                     alert('Erro ao salvar presidente: ' + error.message); // Exibe um alerta com a mensagem de erro
@@ -581,6 +580,7 @@
 
                     if (response.ok && data.success) {
                         alert('Deputado cadastrado com sucesso!');
+                        fetchEtapas();
                         document.querySelector('.iniciarVotacao').style.display = 'block';
                         document.querySelector('.urna').style.display = 'none';
                         document.querySelector('.contentContainer').style.display = 'block';
@@ -598,8 +598,6 @@
                             });
                             alert(errorMessage);
                         }, 100);
-                    } else {
-                        console.log('Dados recebidos do deputado:', data);
                     }
                 } catch (error) {
                     alert('Erro ao salvar deputado: ' + error.message);

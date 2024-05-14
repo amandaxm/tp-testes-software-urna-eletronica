@@ -288,7 +288,6 @@ async function gerarRelatorioSessao() {
         });
 
         const data = await response.json();
-        console.log(data)
         document.querySelector('.iniciarVotacao').style.display = 'block';
         document.querySelector('.urna').style.display = 'none';
         document.querySelector('.contentContainer').style.display = 'block';
@@ -407,7 +406,6 @@ function gerarRelatorio(
 
 
     votosPresidenteOrdenados.forEach((voto, index) => {
-        console.log(voto)
         const row = tabelaPresidentes.insertRow();
         const cellNumero = row.insertCell(0);
         const cellVotos = row.insertCell(1);
@@ -416,7 +414,6 @@ function gerarRelatorio(
     });
 
     votosDeputadoOrdenados.forEach((voto, index) => {
-        console.log(voto)
         const row = tabelaDeputados.insertRow();
         const cellNumero = row.insertCell(0);
         const cellVotos = row.insertCell(1);
