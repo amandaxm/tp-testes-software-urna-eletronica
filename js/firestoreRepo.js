@@ -24,7 +24,7 @@ async function adicionarDeputado(deputado) {
 }
 async function adicionarPresidente(presidente) {
   try {
-
+    console.log(presidente)
     const presidenteQuery = query(collection(db, "presidente"), where("numero", "==", presidente.numero));
         const presidenteSnapshot = await getDocs(presidenteQuery);
         if (!presidenteSnapshot.empty) {
@@ -39,14 +39,15 @@ async function adicionarPresidente(presidente) {
       urlImagem: presidente.urlImagem,
       cargo: 'PRESIDENTE',
       vicePresidente: {
-        nome: presidente.vicePresidente.nome,
-        dataNascimento: presidente.vicePresidente.dataNascimento,
-        numero: presidente.vicePresidente.numero,
-        partido: presidente.vicePresidente.partido,
-        urlImagem: presidente.vicePresidente.urlImagem,
+        nome: presidente.nomeVicePresidente,
+        dataNascimento: presidente.dataNascimentoVicePresidente,
+        numero: presidente.numero,
+        partido: presidente.partidoVicePresidente,
+        urlImagem: presidente.urlImagemVicePresidente,
         cargo: 'VICE-PRESIDENTE',
       }
     });
+    console.log(docRef)
     return { success: true, message: ("Presidente adicionado com ID: ", docRef.id)};
   } catch (error) {
     return { success: false, message: "Erro ao adicionar presidente "};

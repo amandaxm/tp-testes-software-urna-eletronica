@@ -514,31 +514,35 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Seleciona o formulário de presidente
             const presidenteForm = document.getElementById('formPresidente');
 
-            // Variável global para armazenar os erros
             let errors = [];
 
-            // Adiciona um listener para o evento 'submit' no formulário de presidente
             presidenteForm.addEventListener('submit', async function (event) {
                 event.preventDefault(); // Impede o envio do formulário
 
                 try {
-                    // Envia a requisição via fetch
                     const response = await fetch('/presidente', {
                         method: 'POST',
                         body: new FormData(presidenteForm),
                     });
 
-                    // Converte a resposta para JSON
                     const data = await response.json();
+                    if (response.ok && data.success) {
+                        alert('Presidente cadastrado com sucesso!');
+                      
+                        document.querySelector('.iniciarVotacao').style.display = 'block';
+                        document.querySelector('.urna').style.display = 'none';
+                        document.querySelector('.contentContainer').style.display = 'block';
+                        document.querySelector('.iniciarVotacao2').style.display = 'none';
+                        document.getElementById('deputadoForm').classList.remove('active');
+                        document.getElementById('presidenteForm').classList.remove('active');
+                        presidenteForm.reset();
 
-                    // Verifica se há erros na resposta e armazena-os
-                    if (response.ok && data.errors && data.errors.length > 0) {
+
+                    } else if (response.ok && data.errors && data.errors.length > 0) {
                         errors = data.errors;
 
-                        // Exibir os erros após um pequeno intervalo
                         setTimeout(function () {
                             let errorMessage = 'Erros encontrados:\n';
                             errors.forEach(function (error) {
@@ -547,11 +551,9 @@
                             alert(errorMessage);
                         }, 100);
                     } else {
-                        // Se não houver erros ou se a resposta não for bem-sucedida, faça algo com os dados recebidos (se necessário)
                         console.log('Dados recebidos:', data);
                     }
                 } catch (error) {
-                    // Se ocorrer um erro na requisição
                     alert('Erro ao salvar presidente: ' + error.message); // Exibe um alerta com a mensagem de erro
                 }
             });
@@ -562,31 +564,33 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Seleciona o formulário de deputado
             const deputadoForm = document.getElementById('formDeputado');
 
-            // Variável global para armazenar os erros do deputado
             let deputadoErrors = [];
 
-            // Adiciona um listener para o evento 'submit' no formulário de deputado
             deputadoForm.addEventListener('submit', async function (event) {
                 event.preventDefault(); // Impede o envio do formulário
 
                 try {
-                    // Envia a requisição via fetch
                     const response = await fetch('/deputado', {
                         method: 'POST',
                         body: new FormData(deputadoForm),
                     });
 
-                    // Converte a resposta para JSON
                     const data = await response.json();
 
-                    // Verifica se há erros na resposta e armazena-os
-                    if (response.ok && data.errors && data.errors.length > 0) {
+                    if (response.ok && data.success) {
+                        alert('Deputado cadastrado com sucesso!');
+                        document.querySelector('.iniciarVotacao').style.display = 'block';
+                        document.querySelector('.urna').style.display = 'none';
+                        document.querySelector('.contentContainer').style.display = 'block';
+                        document.querySelector('.iniciarVotacao2').style.display = 'none';
+                        document.getElementById('deputadoForm').classList.remove('active');
+                        document.getElementById('presidenteForm').classList.remove('active');
+                        deputadoForm.reset();
+                    } else if (response.ok && data.errors && data.errors.length > 0) {
                         deputadoErrors = data.errors;
 
-                        // Exibir os erros após um pequeno intervalo
                         setTimeout(function () {
                             let errorMessage = 'Erros encontrados no cadastro do deputado:\n';
                             deputadoErrors.forEach(function (error) {
@@ -595,12 +599,10 @@
                             alert(errorMessage);
                         }, 100);
                     } else {
-                        // Se não houver erros ou se a resposta não for bem-sucedida, faça algo com os dados recebidos (se necessário)
                         console.log('Dados recebidos do deputado:', data);
                     }
                 } catch (error) {
-                    // Se ocorrer um erro na requisição
-                    alert('Erro ao salvar deputado: ' + error.message); // Exibe um alerta com a mensagem de erro
+                    alert('Erro ao salvar deputado: ' + error.message);
                 }
             });
         });

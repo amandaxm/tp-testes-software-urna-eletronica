@@ -68,15 +68,19 @@ app.post('/deputado', upload.single('imagemDeputado'), async (req, res) => {
     await adicionarDeputado(novoDeputado).then(async result => {
       if (result.success) {
         etapas = await getEtapasFromFirestore();
-        res.redirect('/?status=success');
-      }
-      else {
-        res.redirect(`/?status=error&message=${encodeURIComponent(result.message)}`);
-      }
+
+        return res.json({ success: true });
+
+      } else {
+        errors.push(result.message)
+        return res.json({ errors });
+      };
+
 
     });
   } catch (error) {
-    console.error('Erro ao criar novo deputado:', error.message);
+    errors.push('Ocorreu um erro durante o processamento da requisição')
+    return res.json({ errors });
   }
 
 });
@@ -110,7 +114,7 @@ app.post('/presidente', upload.fields([{ name: 'imagemPresidente', maxCount: 1 }
       errors.push(...presidenteErrors);
     }
 
-    const vicePresidente = new Candidato(nomeVicePresidente, partidoVicePresidente, novoPresidente.numeroPresidente, urlImagemVicePresidente, new Date(dataNascimentoVicePresidente));
+    const vicePresidente = new Candidato(nomeVicePresidente, partidoVicePresidente, numeroPresidente, urlImagemVicePresidente, new Date(dataNascimentoVicePresidente));
 
     const vicePresidenteErrors = vicePresidente.validar();
     if (vicePresidenteErrors.length > 0) {
@@ -129,14 +133,16 @@ app.post('/presidente', upload.fields([{ name: 'imagemPresidente', maxCount: 1 }
     // Verificar resultado da operação
     if (result.success) {
       // Obter etapas do Firestore
-      const etapas = await getEtapasFromFirestore();
-      res.redirect('/?status=success');
+      etapas = await getEtapasFromFirestore();
+
+      return res.json({ success: true });
     } else {
-      res.redirect(`/?status=error&message=${encodeURIComponent(result.message)}`);
+      errors.push(result.message)
+      return res.json({ errors });
     }
   } catch (error) {
-    console.error('Erro durante o processamento da requisição POST para adicionar um presidente:', error);
-    res.redirect('/?status=error&message=Ocorreu um erro durante o processamento da requisição');
+    errors.push('Ocorreu um erro durante o processamento da requisição')
+    return res.json({ errors });
   }
 });
 
