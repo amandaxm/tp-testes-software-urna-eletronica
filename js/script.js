@@ -463,12 +463,17 @@ function validateTituloEleitor(te) {
     // Remove todos os caracteres não numéricos e preenche com zeros à esquerda
     te = te.replace(/\D/g, '').padStart(12, '0');
 
+    // Verifica se o título de eleitor tem o formato correto
+    if (te.length !== 12) {
+        return { valid: false, error: "Número de título de eleitor inválido: o formato deve ser composto por 12 dígitos numéricos." };
+    }
+
     // Obtém o código do estado (UF) do título de eleitor
     const uf = parseInt(te.substr(8, 2));
 
-    // Verifica se o título de eleitor tem o formato correto
-    if (te.length !== 12 || uf < 1 || uf > 28) {
-        return { valid: false, error: "Número de título de eleitor inválido: o formato deve ser composto por 12 dígitos numéricos." };
+    // Verifica se o código do estado (UF) é válido
+    if(uf < 1 || uf > 28){
+        return { valid: false, error: "Número de título de eleitor inválido: código do estado inválido" };
     }
 
     let d = 0;
