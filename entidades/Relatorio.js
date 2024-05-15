@@ -7,16 +7,16 @@ class Relatorio {
 
     validar() {
         const erros = [];
-        if (!identificadorAdministrador) {
+        if (!this.administrador) {
             erros.push('Número do administrador não pode ser nulo o vazio');
         }
-        if (typeof identificadorAdministrador !== 'string') {
+        if (typeof this.administrador !== 'string') {
             erros.push('Número do administrador deve ser uma string')
         }
-        if (identificadorAdministrador.trim() === '' || isNaN(Number(identificadorAdministrador))) {
+        if (this.administrador.trim() === '' || isNaN(Number(this.administrador))) {
             erros.push('Número do administrador inválido, deve representar um número');
         }
-        if (identificadorAdministrador.length !== 6) {
+        if (this.administrador.length !== 6) {
             erros.push('Número do administrador inválido, deve ter 6 dígitos');
         }
         const idRegex = /^\d{14}$/; 
