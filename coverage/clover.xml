@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1715788407230" clover="3.2.0">
-  <project timestamp="1715788407231" name="All files">
-    <metrics statements="234" coveredstatements="93" conditionals="29" coveredconditionals="29" methods="10" coveredmethods="2" elements="273" coveredelements="124" complexity="0" loc="234" ncloc="234" packages="1" files="4" classes="4"/>
+<coverage generated="1715789272557" clover="3.2.0">
+  <project timestamp="1715789272558" name="All files">
+    <metrics statements="258" coveredstatements="101" conditionals="29" coveredconditionals="29" methods="12" coveredmethods="2" elements="299" coveredelements="132" complexity="0" loc="258" ncloc="258" packages="1" files="5" classes="5"/>
     <file name="Candidato.js" path="C:\Users\GE\Downloads\urna_eletronica\entidades\Candidato.js">
       <metrics statements="67" coveredstatements="67" conditionals="29" coveredconditionals="29" methods="2" coveredmethods="2"/>
       <line num="1" count="1" type="stmt"/>
@@ -71,6 +71,33 @@
       <line num="65" count="1" type="stmt"/>
       <line num="66" count="1" type="stmt"/>
       <line num="67" count="1" type="stmt"/>
+    </file>
+    <file name="Deputado.js" path="C:\Users\GE\Downloads\urna_eletronica\entidades\Deputado.js">
+      <metrics statements="24" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="5" count="0" type="stmt"/>
+      <line num="6" count="0" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="0" type="stmt"/>
+      <line num="9" count="0" type="stmt"/>
+      <line num="10" count="0" type="stmt"/>
+      <line num="11" count="0" type="stmt"/>
+      <line num="12" count="0" type="stmt"/>
+      <line num="13" count="0" type="stmt"/>
+      <line num="14" count="0" type="stmt"/>
+      <line num="15" count="0" type="stmt"/>
+      <line num="16" count="0" type="stmt"/>
+      <line num="17" count="0" type="stmt"/>
+      <line num="18" count="0" type="stmt"/>
+      <line num="19" count="0" type="stmt"/>
+      <line num="20" count="0" type="stmt"/>
+      <line num="21" count="0" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
     </file>
     <file name="Presidente.js" path="C:\Users\GE\Downloads\urna_eletronica\entidades\Presidente.js">
       <metrics statements="38" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
