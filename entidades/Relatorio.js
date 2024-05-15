@@ -7,19 +7,19 @@ class Relatorio {
 
     validar() {
         const erros = [];
-        if (!identificadorAdministrador) {
+        if (!this.administrador) {
             erros.push('Número do administrador não pode ser nulo o vazio');
         }
-        if (typeof identificadorAdministrador !== 'string') {
+        if (typeof this.administrador !== 'string') {
             erros.push('Número do administrador deve ser uma string')
         }
-        if (identificadorAdministrador.trim() === '' || isNaN(Number(identificadorAdministrador))) {
+        if (this.administrador.trim() === '' || isNaN(Number(this.administrador))) {
             erros.push('Número do administrador inválido, deve representar um número');
         }
-        if (identificadorAdministrador.length !== 6) {
+        if (this.administrador.length !== 6) {
             erros.push('Número do administrador inválido, deve ter 6 dígitos');
         }
-        const idRegex = /^\d{14}$/; 
+        const idRegex = /^\d{14}$/;
         if (!idRegex.test(this.idVotacao)) {
             erros.push('ID da votação inválido. O formato deve ser um número de 14 dígitos.');
         }
@@ -30,14 +30,23 @@ class Relatorio {
 
     validateTituloEleitor(te) {
         const errosTituloEleitor = [];
-        
+
+        // Remove todos os caracteres não numéricos e preenche com zeros à esquerda
         te = te.replace(/\D/g, '').padStart(12, '0');
 
-        const uf = parseInt(te.substr(8, 2));
-
-        if (te.length !== 12 || uf < 1 || uf > 28) {
+        // Verifica se o título de eleitor tem o formato correto
+        if (te.length !== 12) {
             errosTituloEleitor.push("Número de título de eleitor inválido: o formato deve ser composto por 12 dígitos numéricos.");
         }
+
+        // Obtém o código do estado (UF) do título de eleitor
+        const uf = parseInt(te.substr(8, 2));
+
+        // Verifica se o código do estado (UF) é válido
+        if (uf < 1 || uf > 28) {
+            errosTituloEleitor.push("Número de título de eleitor inválido: código do estado inválido");
+        }
+
 
         let d = 0;
         // Calcula o primeiro dígito verificador
@@ -76,7 +85,7 @@ class Relatorio {
         }
         // Verifica o segundo dígito verificador
         if (parseInt(te[11]) !== d) {
-            errosTituloEleitor.push("Número de título de eleitor inválido: o segundo dígito verificador está incorreto." );
+            errosTituloEleitor.push("Número de título de eleitor inválido: o segundo dígito verificador está incorreto.");
         }
 
         return errosTituloEleitor;

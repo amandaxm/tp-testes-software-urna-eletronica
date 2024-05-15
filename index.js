@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getEtapasFromFirestore, retornarVotosSessao, salvarVoto, adicionarDeputado, salvarRelatorio, adicionarPresidente } from './js/firestoreRepo.js';
+import { verificarVotoDuplicado, getEtapasFromFirestore, retornarVotosSessao, salvarVoto, adicionarDeputado, salvarRelatorio, adicionarPresidente } from './js/firestoreRepo.js';
 import { storagee } from './js/firebaseConfig.js';
 import bodyParser from 'body-parser';
 import multer from 'multer';
@@ -66,7 +66,7 @@ app.post('/deputado', upload.single('imagemDeputado'), async (req, res) => {
     }
 
     await adicionarDeputado(novoDeputado).then(async result => {
-      
+
 
       if (result.success) {
         etapas = result.etapas;
@@ -188,27 +188,21 @@ app.post('/salvar-votos', async (req, res) => {
   try {
     const result = await salvarVoto(votosUsuario, idVotacao);
     if (result.success) {
-
+      const errors = [];
       const relatorio = new Relatorio(identificadorAdministrador, idVotacao, tituloEleitor);
       const relatorioErrors = relatorio.validar();
-      if (relatorioErrors.length > 0) {
+      if (relatorioErrors && relatorioErrors.length > 0) {
 
         errors.push(...relatorioErrors);
       }
-      if (errors.length > 0) {
+      if (errors && errors.length > 0) {
         return res.json({ errors });
       }
-      const idVotacaoResult = relatorio.validarIdVotacao();
-      if (!idVotacaoResult.valid) {
-        console.error(idVotacaoResult.error);
-      }
 
-      const voterIDResult = relatorio.validateTituloEleitor(relatorio.tituloEleitor);
-      if (!voterIDResult.valid) {
-        console.error(voterIDResult.error);
-      }
-      if (voterIDResult.valid)
-        await salvarRelatorio(identificadorAdministrador, idVotacao, tituloEleitor);
+      
+
+
+      await salvarRelatorio(identificadorAdministrador, idVotacao, tituloEleitor);
     }
     if (result.success) {
       return res.status(200).json({ success: true, message: 'Votos salvos com sucesso' });
@@ -216,12 +210,22 @@ app.post('/salvar-votos', async (req, res) => {
       return res.status(500).json({ success: false, message: result.message });
     }
   } catch (error) {
-    // Se houver um erro ao salvar os votos, retorne uma resposta de erro
-    console.error('Erro ao salvar votos:', error);
     return res.status(500).json({ success: false, message: 'Erro ao salvar os votos' });
   }
 
 
+});
+
+app.post('/eleitor-voto-duplicado', async (req, res) => {
+  const { titulo, idVotacao } = req.body;
+  console.log(titulo)
+  console.log(idVotacao)
+  try {
+    const jaVotou = await verificarVotoDuplicado(titulo, idVotacao);
+    return res.json({ jaVotou })
+  } catch (error) {
+    throw new Error(error.message);
+  }
 });
 
 app.get('/obter-resultado', async (req, res) => {

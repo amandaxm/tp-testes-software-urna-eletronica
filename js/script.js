@@ -221,6 +221,9 @@ function iniciarVotacao() {
     const tituloEleitor = document.getElementById('tituloEleitor').value;
 
  
+
+
+
     document.querySelector('.iniciarVotacao').style.display = 'none';
     document.querySelector('.urna').style.display = 'none';
     document.querySelector('.contentContainer').style.display = 'none';
@@ -235,13 +238,18 @@ function iniciarVotacao() {
 
 }
 
-function iniciarVotacao2() {
+async function iniciarVotacao2() {
 
     tituloEleitorCandidato = document.getElementById('tituloEleitor').value;
 
     let result = validateTituloEleitor(tituloEleitorCandidato);
     if (!result.valid) {
         document.getElementById('tituloEleitorError').textContent = result.error;
+        return;
+    }
+    resultUsuarioJaVotou = await verificarVotoDuplicadoUsuario(tituloEleitorCandidato);
+    if(resultUsuarioJaVotou){
+        alert('Usuario já votou.');
         return;
     }
     document.getElementById('tituloEleitorError').textContent = '';
@@ -514,6 +522,24 @@ function validateTituloEleitor(te) {
     }
 
     return { valid: true, error: null };
+}
+async function verificarVotoDuplicadoUsuario(titulo) {
+
+    const response = await fetch('/eleitor-voto-duplicado', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ titulo: titulo, idVotacao: sessionId })
+    });
+
+    const data = await response.json();
+    if (data.jaVotou) {
+        return true;
+    }else{
+        return false;
+    }
+
 }
 
 module.exports = testCase;
