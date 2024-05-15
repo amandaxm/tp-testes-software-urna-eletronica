@@ -122,8 +122,6 @@ function atualizaInterface() {
     }
 }
 
-
-
 function clicou(num) {
     let ehNumero = document.querySelector('.numero.pisca');
 
@@ -223,7 +221,6 @@ function iniciarVotacao() {
     const tituloEleitor = document.getElementById('tituloEleitor').value;
 
  
-
     document.querySelector('.iniciarVotacao').style.display = 'none';
     document.querySelector('.urna').style.display = 'none';
     document.querySelector('.contentContainer').style.display = 'none';
@@ -518,3 +515,5 @@ function validateTituloEleitor(te) {
 
     return { valid: true, error: null };
 }
+
+module.exports = testCase;
