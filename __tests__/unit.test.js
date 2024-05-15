@@ -1,5 +1,6 @@
 const testCase = require('../js/script')
 
+
 describe('verificarAdministrador', () => {
     let etapas;
     let senhaAdm;

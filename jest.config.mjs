@@ -158,6 +158,8 @@ const config = {
     "**/__tests__/**/*.test.js?(x)"
 
   ],
+  preset: 'ts-jest/presets/default-esm',
+  
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -193,6 +195,9 @@ const config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+  transform: {
+    '^.+\\.(js|jsx)$': 'babel-jest',
+  }
 };
 
 
