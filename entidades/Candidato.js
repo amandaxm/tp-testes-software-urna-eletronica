@@ -7,9 +7,7 @@ class Candidato {
     this.dataNascimento = dataNascimento;
   }
 
-
-
-  validar() {
+  validarNome() {
     const errors = [];
 
     if (!this.nome) {
@@ -18,7 +16,7 @@ class Candidato {
       errors.push('O nome do candidato deve ser uma string.');
     } else if (this.nome.trim() === '') {
       errors.push('O nome do candidato não pode ser uma string vazia.');
-    }else if (this.nome.length > 250) {
+    } else if (this.nome.length > 250) {
       errors.push('O nome do candidato deve ter no máximo 250 caracteres.');
     } else {
       const partesNome = this.nome.trim().split(' ');
@@ -27,6 +25,11 @@ class Candidato {
       }
     }
 
+    return errors;
+  }
+
+  validarPartido() {
+    const errors = [];
 
     if (!this.partido) {
       errors.push('Partido não pode ser vazio');
@@ -36,6 +39,11 @@ class Candidato {
       errors.push("O partido deve ser uma string não vazia e não pode conter apenas espaços em branco.");
     }
 
+    return errors;
+  }
+
+  validarNumero() {
+    const errors = [];
 
     if (!this.numero) {
       errors.push('O número do candidato é obrigatório.');
@@ -46,6 +54,13 @@ class Candidato {
     } else if (isNaN(this.numero)) {
       errors.push('O número do candidato deve ser um valor numérico.');
     }
+
+    return errors;
+  }
+
+  validarURLImagem() {
+    const errors = [];
+
     if (!this.urlImagem) {
       errors.push('A URL da imagem do candidato é obrigatória.');
     } else if (typeof this.urlImagem !== 'string') {
@@ -53,6 +68,13 @@ class Candidato {
     } else if (this.urlImagem.trim() === '') {
       errors.push('A URL da imagem do candidato não pode ser uma string vazia.');
     }
+
+    return errors;
+  }
+
+  validarDataNascimento() {
+    const errors = [];
+
     const data = new Date(this.dataNascimento);
     if (isNaN(data.getTime())) {
       errors.push('Data de nascimento inválida');
@@ -61,7 +83,16 @@ class Candidato {
     return errors;
   }
 
-
+  validar() {
+    const errors = [
+      ...this.validarNome(),
+      ...this.validarPartido(),
+      ...this.validarNumero(),
+      ...this.validarURLImagem(),
+      ...this.validarDataNascimento()
+    ];
+    return errors;
+  }
 }
 
 export { Candidato };
