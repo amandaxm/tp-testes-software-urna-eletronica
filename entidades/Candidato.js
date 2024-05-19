@@ -75,6 +75,9 @@ class Candidato {
   validarDataNascimento() {
     const errors = [];
 
+    if (!this.dataNascimento) {
+      errors.push('Data de nascimento é obrigatória');
+    }
     const data = new Date(this.dataNascimento);
     if (isNaN(data.getTime())) {
       errors.push('Data de nascimento inválida');
