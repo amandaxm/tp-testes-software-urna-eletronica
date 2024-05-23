@@ -6,7 +6,13 @@ describe('Deputado', () => {
   const PARTIDO_VALIDO = 'Partido A';
   const NUMERO_VALIDO = '1234';
   const URL_FOTO_VALIDA = 'https://example.com/foto.jpg';
-  const DATA_NASCIMENTO_VALIDA = '2000-01-01'; // Data que garante idade mínima de 21 anos
+
+  const hoje = new Date();
+  const ano = hoje.getFullYear() - 21;
+  const mes = hoje.getMonth(); // Mês atual
+  const dia = hoje.getDate(); // Dia atual
+  const dataNascimentoValida = new Date(ano, mes, dia);
+  const DATA_NASCIMENTO_VALIDA = dataNascimentoValida.toISOString().split('T')[0]; // Data que garante idade mínima de 21 anos
 
   let deputado;
 
@@ -37,119 +43,80 @@ describe('Deputado', () => {
   });
 
   describe('Validação de Nome', () => {
-    it('deve retornar um erro quando o nome é vazio', () => {
-      expectValidationError('nome', '', ['O nome do candidato é obrigatório.']);
-    });
-
-    it('deve retornar um erro quando o nome não é uma string', () => {
-      expectValidationError('nome', 123, ['O nome do candidato deve ser uma string.']);
-    });
-
-    it('deve retornar um erro quando o nome é uma string vazia', () => {
-      expectValidationError('nome', '   ', ['O nome do candidato não pode ser uma string vazia.']);
-    });
-
-    it('deve retornar um erro quando o nome tem mais de 250 caracteres', () => {
-      expectValidationError('nome', 'A'.repeat(251), ['O nome do candidato deve ter no máximo 250 caracteres.']);
-    });
-
-    it('deve retornar um erro quando o nome não contém sobrenome', () => {
-      expectValidationError('nome', 'João', ['O nome do candidato deve conter pelo menos um sobrenome.']);
+    it.each([
+      ['', ['O nome do candidato é obrigatório.']],
+      [123, ['O nome do candidato deve ser uma string.']],
+      ['   ', ['O nome do candidato não pode ser uma string vazia.']],
+      ['A'.repeat(251), ['O nome do candidato deve ter no máximo 250 caracteres.']],
+      ['João', ['O nome do candidato deve conter pelo menos um sobrenome.']]
+    ])('deve retornar erro quando o nome é "%s"', (nome, expectedErrors) => {
+      expectValidationError('nome', nome, expectedErrors);
     });
   });
 
   describe('Validação de Partido', () => {
-    it('deve retornar um erro quando o partido é vazio', () => {
-      expectValidationError('partido', '', ['Partido não pode ser vazio']);
-    });
-
-    it('deve retornar um erro quando o partido não é uma string', () => {
-      expectValidationError('partido', 123, ['Partido deve ser uma string']);
-    });
-
-    it('deve retornar um erro quando o partido é uma string vazia', () => {
-      expectValidationError('partido', '   ', ['O partido deve ser uma string não vazia e não pode conter apenas espaços em branco.']);
+    it.each([
+      ['', ['Partido não pode ser vazio']],
+      [123, ['Partido deve ser uma string']],
+      ['   ', ['O partido deve ser uma string não vazia e não pode conter apenas espaços em branco.']]
+    ])('deve retornar erro quando o partido é "%s"', (partido, expectedErrors) => {
+      expectValidationError('partido', partido, expectedErrors);
     });
   });
 
   describe('Validação de Número', () => {
-    it('deve retornar erros quando o número é vazio', () => {
-      expectValidationError('numero', '', [
+    it.each([
+      ['', [
         'O número do candidato é obrigatório.',
         'Número do deputado deve ter 4 dígitos'
-      ]);
-    });
-
-    it('deve retornar erros quando o número não é uma string', () => {
-      expectValidationError('numero', 123, [
+      ]],
+      [123, [
         'O número do candidato deve ser uma string.',
         'Número do deputado deve ter 4 dígitos'
-      ]);
-    });
-
-    it('deve retornar erros quando o número é uma string vazia', () => {
-      expectValidationError('numero', '   ', [
+      ]],
+      ['   ', [
         'O número do candidato não pode ser uma string vazia.',
         'Número do deputado deve ter 4 dígitos'
-      ]);
-    });
-
-    it('deve retornar erros quando o número não é um valor numérico', () => {
-      expectValidationError('numero', 'abc', [
+      ]],
+      ['abc', [
         'O número do candidato deve ser um valor numérico.',
         'Número do deputado deve ter 4 dígitos'
-      ]);
-    });
-
-    it('deve retornar um erro quando o número não tem 4 dígitos', () => {
-      expectValidationError('numero', '123', ['Número do deputado deve ter 4 dígitos']);
+      ]],
+      ['123', ['Número do deputado deve ter 4 dígitos']]
+    ])('deve retornar erro quando o número é "%s"', (numero, expectedErrors) => {
+      expectValidationError('numero', numero, expectedErrors);
     });
   });
 
   describe('Validação de URL da Imagem', () => {
-    it('deve retornar um erro quando a URL da imagem é vazia', () => {
-      expectValidationError('urlImagem', '', ['A URL da imagem do candidato é obrigatória.']);
-    });
-
-    it('deve retornar um erro quando a URL da imagem não é uma string', () => {
-      expectValidationError('urlImagem', 123, ['A URL da imagem do candidato deve ser uma string.']);
-    });
-
-    it('deve retornar um erro quando a URL da imagem é uma string vazia', () => {
-      expectValidationError('urlImagem', '   ', ['A URL da imagem do candidato não pode ser uma string vazia.']);
+    it.each([
+      ['', ['A URL da imagem do candidato é obrigatória.']],
+      [123, ['A URL da imagem do candidato deve ser uma string.']],
+      ['   ', ['A URL da imagem do candidato não pode ser uma string vazia.']]
+    ])('deve retornar erro quando a URL da imagem é "%s"', (urlImagem, expectedErrors) => {
+      expectValidationError('urlImagem', urlImagem, expectedErrors);
     });
   });
 
   describe('Validação de Data de Nascimento', () => {
-    it('deve retornar um erro quando a data de nascimento é inválida', () => {
-      expectValidationError('dataNascimento', 'abc', ['Data de nascimento inválida']);
+    it.each([
+      ['abc', ['Data de nascimento inválida']],
+      ['2005-01-01', ['O candidato deve ter no mínimo 21 anos para se tornar deputado']],
+      ['32-01-2000', ['Data de nascimento inválida']]
+    ])('deve retornar erro quando a data de nascimento é "%s"', (dataNascimento, expectedErrors) => {
+      expectValidationError('dataNascimento', dataNascimento, expectedErrors);
     });
 
-    it('deve retornar um erro quando o candidato tem menos de 21 anos', () => {
-      expectValidationError('dataNascimento', '2005-01-01', ['O candidato deve ter no mínimo 21 anos para se tornar deputado']);
-    });
-
-    it('deve retornar um erro quando o candidato tem exatamente 21 anos, mas o mês ainda não chegou', () => {
-      const hoje = new Date();
+    it('deve retornar erro quando o candidato tem exatamente 21 anos, mas o mês ainda não chegou', () => {
       const ano = hoje.getFullYear() - 21;
       const mes = hoje.getMonth() + 1; // Mês atual
-      const dia = hoje.getDate(); // Dia atual
-      const dataNascimento = new Date(ano, mes, dia); // Data de nascimento exatamente 21 anos atrás, mas no mês atual do ano seguinte
-      deputado.dataNascimento = dataNascimento.toISOString().split('T')[0];
-      expect(deputado.validar()).toContain('O candidato deve ter no mínimo 21 anos para se tornar deputado');
+      const dia = hoje.getDate();
+      const dataNascimento = new Date(ano, mes, dia).toISOString().split('T')[0];
+      expectValidationError('dataNascimento', dataNascimento, ['O candidato deve ter no mínimo 21 anos para se tornar deputado']);
     });
 
-    it('não deve retornar um erro quando o candidato tem exatamente 21 anos hoje', () => {
-      const hoje = new Date();
-      const ano = hoje.getFullYear() - 21;
-      const mes = hoje.getMonth(); // Mês atual
-      const dia = hoje.getDate(); // Dia atual
-      const dataNascimento = new Date(ano, mes, dia); // Data de nascimento exatamente 21 anos atrás, no mesmo mês e dia atual
-      deputado.dataNascimento = dataNascimento.toISOString().split('T')[0];
-      expect(deputado.validar()).toEqual([]);
-    });
-    it('deve retornar um erro quando a data de nascimento está em um formato inválido', () => {
-      expectValidationError('dataNascimento', '32-01-2000', ['Data de nascimento inválida']);
+    it('não deve retornar erro quando o candidato tem exatamente 21 anos hoje', () => {
+      expectValidationError('dataNascimento', DATA_NASCIMENTO_VALIDA, []);
     });
   });
 });

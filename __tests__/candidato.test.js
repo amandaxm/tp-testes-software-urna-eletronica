@@ -41,112 +41,78 @@ describe('Candidato', () => {
   });
 
   describe('Validação de Nome', () => {
-    it('deve retornar um erro quando o nome é vazio', () => {
-      expectValidationError('nome', '', ['O nome do candidato é obrigatório.']);
+    it.each([
+      ['', ['O nome do candidato é obrigatório.']],
+      [123, ['O nome do candidato deve ser uma string.']],
+      ['   ', ['O nome do candidato não pode ser uma string vazia.']],
+      ['A'.repeat(251), ['O nome do candidato deve ter no máximo 250 caracteres.']],
+      ['João', ['O nome do candidato deve conter pelo menos um sobrenome.']],
+      [null, ['O nome do candidato é obrigatório.']]
+    ])('deve retornar erro quando o nome é "%s"', (nome, expectedErrors) => {
+      expectValidationError('nome', nome, expectedErrors);
     });
 
-    it('deve retornar um erro quando o nome não é uma string', () => {
-      expectValidationError('nome', 123, ['O nome do candidato deve ser uma string.']);
-    });
-
-    it('deve retornar um erro quando o nome é uma string vazia', () => {
-      expectValidationError('nome', '   ', ['O nome do candidato não pode ser uma string vazia.']);
-    });
-
-    it('deve retornar um erro quando o nome tem mais de 250 caracteres', () => {
-      expectValidationError('nome', 'A'.repeat(251), ['O nome do candidato deve ter no máximo 250 caracteres.']);
-    });
-
-    it('deve retornar um erro quando o nome não contém sobrenome', () => {
-      expectValidationError('nome', 'João', ['O nome do candidato deve conter pelo menos um sobrenome.']);
-    });
-
-    it('deve retornar um erro quando o nome é nulo', () => {
-      expectValidationError('nome', null, ['O nome do candidato é obrigatório.']);
-    });
-
-    it('deve retornar um erro quando o nome tem exatamente 250 caracteres', () => {
+    it('não deve retornar erro quando o nome tem exatamente 250 caracteres', () => {
       expectValidationError('nome', 'A'.repeat(250), []);
-    });
-
-    it('deve retornar um erro quando o nome tem mais de 250 caracteres', () => {
-      expectValidationError('nome', 'A'.repeat(251), ['O nome do candidato deve ter no máximo 250 caracteres.']);
     });
   });
 
   describe('Validação de Partido', () => {
-    it('deve retornar um erro quando o partido é vazio', () => {
-      expectValidationError('partido', '', ['Partido não pode ser vazio']);
-    });
-
-    it('deve retornar um erro quando o partido não é uma string', () => {
-      expectValidationError('partido', 123, ['Partido deve ser uma string']);
-    });
-
-    it('deve retornar um erro quando o partido é uma string vazia', () => {
-      expectValidationError('partido', '   ', ['O partido deve ser uma string não vazia e não pode conter apenas espaços em branco.']);
+    it.each([
+      ['', ['Partido não pode ser vazio']],
+      [123, ['Partido deve ser uma string']],
+      ['   ', ['O partido deve ser uma string não vazia e não pode conter apenas espaços em branco.']]
+    ])('deve retornar erro quando o partido é "%s"', (partido, expectedErrors) => {
+      expectValidationError('partido', partido, expectedErrors);
     });
   });
 
   describe('Validação de Número', () => {
-    it('deve retornar um erro quando o número é vazio', () => {
-      expectValidationError('numero', '', ['O número do candidato é obrigatório.']);
-    });
-
-    it('deve retornar um erro quando o número não é uma string', () => {
-      expectValidationError('numero', 123, ['O número do candidato deve ser uma string.']);
-    });
-
-    it('deve retornar um erro quando o número é uma string vazia', () => {
-      expectValidationError('numero', '   ', ['O número do candidato não pode ser uma string vazia.']);
-    });
-
-    it('deve retornar um erro quando o número não é um valor numérico', () => {
-      expectValidationError('numero', 'abc', ['O número do candidato deve ser um valor numérico.']);
+    it.each([
+      ['', ['O número do candidato é obrigatório.']],
+      [123, ['O número do candidato deve ser uma string.']],
+      ['   ', ['O número do candidato não pode ser uma string vazia.']],
+      ['abc', ['O número do candidato deve ser um valor numérico.']],
+      [' 12345 ', []]
+    ])('deve retornar erro quando o número é "%s"', (numero, expectedErrors) => {
+      expectValidationError('numero', numero, expectedErrors);
     });
   });
 
   describe('Validação de URL da Imagem', () => {
-    it('deve retornar um erro quando a URL da imagem é vazia', () => {
-      expectValidationError('urlImagem', '', ['A URL da imagem do candidato é obrigatória.']);
-    });
-
-    it('deve retornar um erro quando a URL da imagem não é uma string', () => {
-      expectValidationError('urlImagem', 123, ['A URL da imagem do candidato deve ser uma string.']);
-    });
-
-    it('deve retornar um erro quando a URL da imagem é uma string vazia', () => {
-      expectValidationError('urlImagem', '   ', ['A URL da imagem do candidato não pode ser uma string vazia.']);
+    it.each([
+      ['', ['A URL da imagem do candidato é obrigatória.']],
+      [123, ['A URL da imagem do candidato deve ser uma string.']],
+      ['   ', ['A URL da imagem do candidato não pode ser uma string vazia.']]
+    ])('deve retornar erro quando a URL da imagem é "%s"', (urlImagem, expectedErrors) => {
+      expectValidationError('urlImagem', urlImagem, expectedErrors);
     });
   });
 
   describe('Validação de Data de Nascimento', () => {
-    it('deve retornar um erro quando a data de nascimento é inválida', () => {
-      expectValidationError('dataNascimento', 'abc', ['Data de nascimento inválida']);
+    it.each([
+      ['abc', ['Data de nascimento inválida']],
+      [null, ['Data de nascimento é obrigatória']]
+    ])('deve retornar erro quando a data de nascimento é "%s"', (dataNascimento, expectedErrors) => {
+      expectValidationError('dataNascimento', dataNascimento, expectedErrors);
     });
 
-    it('deve retornar um erro quando a data de nascimento é nula', () => {
-      expectValidationError('dataNascimento', null, ['Data de nascimento é obrigatória']);
-    });
-
-    it('não deve retornar um erro quando a data de nascimento é uma string vazia', () => {
+    it('não deve retornar erro quando a data de nascimento é uma string vazia', () => {
       expectValidationError('dataNascimento', '', []);
     });
   });
 
-
-  describe('Casos extremos', () => {
-    it('deve retornar um erro quando o nome é nulo', () => {
+  describe('Casos Extremos', () => {
+    it('deve retornar erro quando o nome é nulo', () => {
       expectValidationError('nome', null, ['O nome do candidato é obrigatório.']);
     });
 
-    it('deve retornar um erro quando a data de nascimento é nula', () => {
+    it('deve retornar erro quando a data de nascimento é nula', () => {
       expectValidationError('dataNascimento', null, ['Data de nascimento é obrigatória']);
     });
 
-    it('não deve retornar um erro quando a data de nascimento é uma string vazia', () => {
+    it('não deve retornar erro quando a data de nascimento é uma string vazia', () => {
       expectValidationError('dataNascimento', '', []);
     });
   });
 });
-
