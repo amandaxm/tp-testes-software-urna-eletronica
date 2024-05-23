@@ -7,7 +7,11 @@ Integrantes: Amanda Xavier Mariano, Emyle Santos Lima, Laura Godinho Barroso, Ma
    Após votação de todos os eleitores, o administrador deve selecionar a opção "Finalizar votação e obter relatório". O relatório exibe o código verificador. O número do presidente e do deputado eleitos, a quantidade de votos para cada canditado a presidente e para cada deputado que obteve pelo menos um voto. Outros cenários possíveis são nenhum voto válido para determinada categoria de candidato ou empate. Para ambos casos, é exibida uma mensagem no relatório identificando a situação. Por fim, o relatório também exibe a quantidade de votos brancos, nulos, a quantidade total de eleitores a a data de emissão.
 
 
-2. **Explicação das tecnologias usadas:**
+2. **Tecnologias usadas:**
+- **JavaScript:** Linguagem de programação usada tanto no frontend quanto no backend para criar interfaces interativas e dinâmicas.
+- **Node.js:** Ambiente de execução que permite a execução de códigos JavaScript fora de um navegador web, tendo como principal característica a arquitetura assíncrona e orientada por eventos.
+- **Jest:** Um dos Frameworks de testes mais utilizados em javascript por executar os testes de rápida e segura, ser simples e ter uma boa documentação, além de outras caraterísticas como a geração de relatórios de cobertura de código, fáceis simulações e exeções claras.
+- **Babel:** Transpilador que permite o uso de sintaxe moderna em JavaScript, garantindo compatibilidade com todos os navegadores.
 
 
 3. **Instruções para execução**
