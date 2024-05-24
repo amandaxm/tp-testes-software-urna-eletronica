@@ -5,27 +5,30 @@ class Relatorio {
         this.tituloEleitor = tituloEleitor;
     }
 
+
     validar() {
         const erros = [];
         if (!this.administrador) {
-            erros.push('Número do administrador não pode ser nulo o vazio');
-        }
-        if (typeof this.administrador !== 'string') {
-            erros.push('Número do administrador deve ser uma string')
-        }
-        if (this.administrador.trim() === '' || isNaN(Number(this.administrador))) {
+            erros.push('Número do administrador não pode ser nulo ou vazio');
+        } else if (typeof this.administrador !== 'string') {
+            erros.push('Número do administrador deve ser uma string');
+        } else if (this.administrador.trim() === '' || isNaN(Number(this.administrador))) {
             erros.push('Número do administrador inválido, deve representar um número');
-        }
-        if (this.administrador.length !== 6) {
+        } else if (this.administrador.length !== 6) {
             erros.push('Número do administrador inválido, deve ter 6 dígitos');
         }
-        const idRegex = /^\d{14}$/;
+    
+        const idRegex = /^\d{12}$/;
         if (!idRegex.test(this.idVotacao)) {
-            erros.push('ID da votação inválido. O formato deve ser um número de 14 dígitos.');
+            erros.push('ID da votação inválido. O formato deve ser um número de 12 dígitos.');
         }
-        erros.push(this.validateTituloEleitor(this.tituloEleitor));
-
-
+    
+        const tituloEleitorErrors = this.validateTituloEleitor(this.tituloEleitor);
+        if (tituloEleitorErrors.length > 0) {
+            erros.push(...tituloEleitorErrors);
+        }
+    
+        return erros;
     }
 
     validateTituloEleitor(te) {
@@ -47,7 +50,6 @@ class Relatorio {
             errosTituloEleitor.push("Número de título de eleitor inválido: código do estado inválido");
         }
 
-
         let d = 0;
         // Calcula o primeiro dígito verificador
         for (let i = 0; i < 8; i++) {
@@ -68,25 +70,28 @@ class Relatorio {
             errosTituloEleitor.push("Número de título de eleitor inválido: o primeiro dígito verificador está incorreto.");
         }
 
-        d *= 2;
+        let d2 = d * 2;
         // Calcula o segundo dígito verificador
         for (let i = 8; i < 10; i++) {
-            d += parseInt(te[i]) * (12 - i);
+            d2 += parseInt(te[i]) * (12 - i);
         }
-        d %= 11;
-        if (d < 2) {
+        d2 %= 11;
+        if (d2 < 2) {
             if (uf < 3) {
-                d = 1 - d;
+                d2 = 1 - d2;
             } else {
-                d = 0;
+                d2 = 0;
             }
         } else {
-            d = 11 - d;
+            d2 = 11 - d2;
         }
         // Verifica o segundo dígito verificador
-        if (parseInt(te[11]) !== d) {
+        if (parseInt(te[11]) !== d2) {
             errosTituloEleitor.push("Número de título de eleitor inválido: o segundo dígito verificador está incorreto.");
         }
+
+       
+
 
         return errosTituloEleitor;
     }
