@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1716492405506" clover="3.2.0">
-  <project timestamp="1716492405507" name="All files">
+<coverage generated="1718043981616" clover="3.2.0">
+  <project timestamp="1718043981616" name="All files">
     <metrics statements="135" coveredstatements="135" conditionals="42" coveredconditionals="42" methods="9" coveredmethods="9" elements="186" coveredelements="186" complexity="0" loc="135" ncloc="135" packages="1" files="2" classes="2"/>
     <file name="Candidato.js" path="C:\Users\Laura Godinho\Documents\UFMG\Optativas\Testes de software\tp-testes-software-urna-eletronica\entidades\Candidato.js">
       <metrics statements="101" coveredstatements="101" conditionals="35" coveredconditionals="35" methods="7" coveredmethods="7"/>

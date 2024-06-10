@@ -1,12 +1,13 @@
 import { Candidato } from '../entidades/Candidato.js';
 import { jest } from '@jest/globals';
+import { faker } from '@faker-js/faker';
 
 describe('Candidato', () => {
-  const NOME_VALIDO = 'João da Silva';
-  const PARTIDO_VALIDO = 'Partido A';
-  const NUMERO_VALIDO = '12345';
-  const URL_FOTO_VALIDA = 'https://example.com/foto.jpg';
-  const DATA_NASCIMENTO_VALIDA = '1990-01-01';
+  const NOME_VALIDO = faker.person.fullName();
+  const PARTIDO_VALIDO = faker.company.name();
+  const NUMERO_VALIDO = faker.string.numeric(5);
+  const URL_FOTO_VALIDA = faker.image.url();
+  const DATA_NASCIMENTO_VALIDA = faker.date.birthdate({ min: 18, max: 65, mode: 'age' }).toISOString().split('T')[0];
 
   let candidato;
 

@@ -1,11 +1,12 @@
 import { Candidato } from '../entidades/Candidato.js';
 import { Deputado } from '../entidades/Deputado.js';
+import { faker } from '@faker-js/faker';
 
 describe('Deputado', () => {
-  const NOME_VALIDO = 'João da Silva';
-  const PARTIDO_VALIDO = 'Partido A';
-  const NUMERO_VALIDO = '1234';
-  const URL_FOTO_VALIDA = 'https://example.com/foto.jpg';
+  const NOME_VALIDO = faker.person.fullName();
+  const PARTIDO_VALIDO = faker.company.name();
+  const NUMERO_VALIDO = faker.string.numeric(4);
+  const URL_FOTO_VALIDA = faker.image.url();
 
   const hoje = new Date();
   const ano = hoje.getFullYear() - 21;
