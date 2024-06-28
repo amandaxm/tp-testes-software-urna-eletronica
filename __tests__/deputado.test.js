@@ -10,10 +10,10 @@ describe('Deputado', () => {
 
   const hoje = new Date();
   const ano = hoje.getFullYear() - 21;
-  const mes = hoje.getMonth(); // Mês atual
-  const dia = hoje.getDate(); // Dia atual
+  const mes = hoje.getMonth(); 
+  const dia = hoje.getDate(); 
   const dataNascimentoValida = new Date(ano, mes, dia);
-  const DATA_NASCIMENTO_VALIDA = dataNascimentoValida.toISOString().split('T')[0]; // Data que garante idade mínima de 21 anos
+  const DATA_NASCIMENTO_VALIDA = dataNascimentoValida.toISOString().split('T')[0]; 
 
   let deputado;
 
