@@ -96,5 +96,5 @@ class Relatorio {
         return errosTituloEleitor;
     }
 }
-export { Relatorio };
+module.exports = { Relatorio };
 

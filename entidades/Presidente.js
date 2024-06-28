@@ -1,4 +1,4 @@
-import { Candidato } from './Candidato.js';
+const { Candidato } = require('./Candidato.js');
 
 class Presidente extends Candidato {
   constructor(nome, partido, numero, urlImagem, dataNascimento) {
@@ -43,5 +43,5 @@ class Presidente extends Candidato {
   }
 }
 
-export { Presidente };
+module.exports = { Presidente };
 

@@ -98,4 +98,4 @@ class Candidato {
   }
 }
 
-export { Candidato };
+module.exports = { Candidato };
