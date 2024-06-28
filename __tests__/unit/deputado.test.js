@@ -1,5 +1,5 @@
-import { Candidato } from '../entidades/Candidato.js';
-import { Deputado } from '../entidades/Deputado.js';
+import { Candidato } from '../../entidades/Candidato.js';
+import { Deputado } from '../../entidades/Deputado.js';
 import { faker } from '@faker-js/faker';
 
 describe('Deputado', () => {

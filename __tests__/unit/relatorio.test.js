@@ -1,4 +1,4 @@
-import { Relatorio } from '../entidades/Relatorio.js';
+import { Relatorio } from '../../entidades/Relatorio.js';
 
 describe('Relatorio', () => {
   const ADMIN_VALIDO = '123456';

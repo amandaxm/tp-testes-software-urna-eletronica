@@ -1,5 +1,5 @@
-import { Presidente } from '../entidades/Presidente.js';
-import { Candidato } from '../entidades/Candidato.js';
+import { Presidente } from '../../entidades/Presidente.js';
+import { Candidato } from '../../entidades/Candidato.js';
 import { jest } from '@jest/globals';
 
 describe('Presidente', () => {

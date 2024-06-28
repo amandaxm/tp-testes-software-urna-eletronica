@@ -1,4 +1,4 @@
-import { Voto } from '../entidades/Voto.js';
+import { Voto } from '../../entidades/Voto.js';
 
 describe('Voto', () => {
     const NUMERO_PRESIDENTE_VALIDO = '1234';
