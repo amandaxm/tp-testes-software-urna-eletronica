@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "test:unit": "jest __tests__/unit",
-    "test:integration": "jest __tests__/integration"
+    "test:integration": "jest __tests__/integration",
+    "coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -36,5 +37,9 @@
     "jsdom": "^24.1.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.2"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["json", "lcov", "text", "clover"]
   }
 }
