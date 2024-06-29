@@ -37,9 +37,5 @@
     "jsdom": "^24.1.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.2"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "coverageReporters": ["json", "lcov", "text", "clover"]
   }
 }
