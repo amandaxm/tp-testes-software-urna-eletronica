@@ -215,8 +215,7 @@ app.post('/salvar-votos', async (req, res) => {
 
 app.post('/eleitor-voto-duplicado', async (req, res) => {
   const { titulo, idVotacao } = req.body;
-  console.log(titulo)
-  console.log(idVotacao)
+
   try {
     const jaVotou = await verificarVotoDuplicado(titulo, idVotacao);
     return res.json({ jaVotou })

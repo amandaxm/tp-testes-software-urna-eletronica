@@ -1,82 +1,82 @@
-import { JSDOM } from 'jsdom';
-import fs from 'fs';
-import path from 'path';
-import fetchMock from 'jest-fetch-mock';
+const request = require('supertest');
+const app = require('../../index.js');
+const { verificarVotoDuplicado } = require('../../js/firestoreRepo.js');
+const path = require('path');
 
-const html = fs.readFileSync(path.resolve(__dirname, '../../index.html'), 'utf8');
-console.log('teste')
-let dom;
-let document;
+jest.mock('../../js/firestoreRepo.js', () => ({
+  getEtapasFromFirestore: jest.fn().mockResolvedValue(['etapa1', 'etapa2']),
+  verificarVotoDuplicado: jest.fn().mockResolvedValue(true) // Mock para sempre retornar true
+}));
 
-test('teste simples que sempre passa', () => {
-    const valor = true; // Valor que sempre será verdadeiro
-  
-    // Assertion que sempre passa
-    expect(valor).toBe(true);
+describe('GET /etapas', () => {
+  it('deve retornar as etapas', async () => {
+    const response = await request(app).get('/etapas');
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(['etapa1', 'etapa2']);
+  });
+});
+
+
+describe('POST /salvar-votos', () => {
+  it(' ', async () => {
+
+    const votosValidos = [
+      { etapa: 'PRESIDENTE', voto: '123' },
+      { etapa: 'DEPUTADO', voto: '456' }
+    ];
+
+    const response = await request(app)
+      .post('/salvar-votos')
+      .send({ votos: votosValidos });
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({
+      success: false,
+      message: 'Erro ao salvar os votos'
+    });
+  });
+});
+
+describe('POST /eleitor-voto-duplicado', () => {
+  it('deve verificar se o eleitor já votou', async () => {
+    const tituloEleitor = '123456789'; // Exemplo de título de eleitor
+    const idVotacao = 'abcd1234'; // Exemplo de ID de votação
+
+    // Simula a requisição POST para o endpoint /eleitor-voto-duplicado
+    const response = await request(app)
+      .post('/eleitor-voto-duplicado')
+      .send({ titulo: tituloEleitor, idVotacao });
+
+    // Verifica se a resposta tem status 200 (OK)
+    expect(response.status).toBe(200);
+
+    // Verifica se a resposta contém um objeto JSON com a propriedade `jaVotou`
+    expect(response.body).toHaveProperty('jaVotou', true);
+
+    // Verifica se `verificarVotoDuplicado` foi chamado corretamente
+    expect(verificarVotoDuplicado).toHaveBeenCalledWith(tituloEleitor, idVotacao);
+  });
+});
+
+
+describe('GET /obter-resultado', () => {
+  it('deve retornar status 500 ao buscar os votos da sessão de votação com erro', async () => {
+    const idSessao = 'sessao-inexistente'; // Simula um ID de sessão inválido
+
+    // Faz a requisição GET para /obter-resultado com o ID da sessão inválido
+    const response = await request(app)
+      .get('/obter-resultado')
+      .query({ idSessao });
+
+    // Verifica se a resposta tem status 500 (Erro interno do servidor)
+    expect(response.status).toBe(500);
+
+    // Verifica se a resposta contém uma mensagem de erro apropriada
+    expect(response.body).toEqual({ error: 'Erro ao buscar os votos da sessão de votação' });
   });
 
 
-// describe('Urna Eletrônica', () => {
-//     beforeEach(() => {
-//         dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable' });
-//         document = dom.window.document;
-//         fetchMock = fetchMock.enableMocks();
-//     });
+  
+});
 
-//     test('Iniciar a votação', () => {
-//         const iniciarButton = document.getElementById('iniciarVotacao');
-//         iniciarButton.click();
 
-//         const contentContainer = document.querySelector('.contentContainer');
-//         const urnaContainer = document.querySelector('.urna');
-
-//         expect(contentContainer.style.display).toBe('none');
-//         expect(urnaContainer.style.display).toBe('flex');
-//     });
-
-//     test('Votar em um candidato válido', () => {
-//         document.querySelector('.numero.pisca').innerHTML = '1';
-//         document.querySelector('.numero.pisca').classList.remove('pisca');
-//         document.querySelector('.numero').nextElementSibling.classList.add('pisca');
-//         document.querySelector('.numero.pisca').innerHTML = '2';
-//         document.querySelector('.numero.pisca').classList.remove('pisca');
-
-//         const confirmaButton = document.getElementById('confirma');
-//         confirmaButton.click();
-
-//         const votos = JSON.parse(document.querySelector('body').dataset.votos);
-//         expect(votos[0].voto).toBe('12');
-//     });
-
-//     test('Voto em branco', () => {
-//         const brancoButton = document.getElementById('branco');
-//         brancoButton.click();
-
-//         const descricao = document.querySelector('.descricao');
-//         expect(descricao.innerHTML).toContain('VOTO EM BRANCO');
-//     });
-
-//     test('Corrigir voto', () => {
-//         document.querySelector('.numero.pisca').innerHTML = '1';
-//         document.querySelector('.numero.pisca').classList.remove('pisca');
-//         document.querySelector('.numero').nextElementSibling.classList.add('pisca');
-//         document.querySelector('.numero.pisca').innerHTML = '2';
-//         document.querySelector('.numero.pisca').classList.remove('pisca');
-
-//         const corrigeButton = document.getElementById('corrige');
-//         corrigeButton.click();
-
-//         const numeroDigitado = document.querySelector('.numero.pisca').innerHTML;
-//         expect(numeroDigitado).toBe('');
-//     });
-
-//     test('Finalizar votação e gerar relatório', async () => {
-//         const confirmaButton = document.getElementById('confirma');
-//         confirmaButton.click();
-
-//         await new Promise(resolve => setTimeout(resolve, 2000));
-
-//         const relatorioContainer = document.querySelector('.relatorio-container');
-//         expect(relatorioContainer.style.display).toBe('block');
-//     });
-// });
