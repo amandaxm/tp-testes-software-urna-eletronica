@@ -9,12 +9,6 @@ describe('Candidato', () => {
   const URL_FOTO_VALIDA = faker.image.url();
   const DATA_NASCIMENTO_VALIDA = faker.date.birthdate({ min: 18, max: 65, mode: 'age' }).toISOString().split('T')[0];
 
-  // console.log('Dados gerados pelo faker:');
-  // console.log('Nome:', NOME_VALIDO);
-  // console.log('Partido:', PARTIDO_VALIDO);
-  // console.log('Número:', NUMERO_VALIDO);
-  // console.log('URL da Foto:', URL_FOTO_VALIDA);
-  // console.log('Data de Nascimento:', DATA_NASCIMENTO_VALIDA);
 
   let candidato;
 
